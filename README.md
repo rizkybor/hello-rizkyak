@@ -17,8 +17,8 @@ Node 22 (lihat `.nvmrc`).
 ## Sebelum deploy: atur domain
 
 Canonical URL, Open Graph, sitemap, `robots.txt`, dan `llms.txt` memakai `site` di `astro.config.mjs`.
-Set environment variable `SITE_URL` di hosting (contoh `https://rizkyak.dev`), atau ubah nilai default
-`https://rizkyak.vercel.app` di `astro.config.mjs`.
+Set environment variable `SITE_URL` di hosting (contoh `https://rizkyajiekurniawan.my.id`), atau ubah nilai default
+`https://rizkyajiekurniawan.my.id` di `astro.config.mjs`.
 
 ## Deploy
 
