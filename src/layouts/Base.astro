@@ -87,7 +87,7 @@ const jsonLd = {
         },
       })),
     },
-    ...documents.map((d) => ({
+    ...documents.filter((d) => !d.hidden).map((d) => ({
       '@type': 'DigitalDocument',
       name: `${d.title} — ${person.name}`,
       encodingFormat: 'application/pdf',

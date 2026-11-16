@@ -297,6 +297,7 @@ export const documents = [
     detail: 'Format ATS satu kolom.',
     href: '/docs/cv-rizky-ajie-kurniawan-id.pdf',
     pages: 3,
+    hidden: true, // file tetap ada di /docs, hanya tidak ditampilkan
   },
   {
     id: 'cv-en',
@@ -304,5 +305,6 @@ export const documents = [
     detail: 'ATS-friendly, single column.',
     href: '/docs/cv-rizky-ajie-kurniawan-en.pdf',
     pages: 3,
+    hidden: true,
   },
 ];
