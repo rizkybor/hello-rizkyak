@@ -1,7 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { projects } from '../data/profile';
+import { getProfile } from '../data';
+import { getLang, t } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const ui = t(lang);
+const { projects } = getProfile(lang);
 
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/projects/*.{png,jpg}', { eager: true });
 const img = (name: string) => {
@@ -18,7 +22,7 @@ const host = (u: string) => new URL(u).host.replace(/^www\./, '');
       <figure class="feature__media">
         <Image
           src={img(p.image)}
-          alt={`Tampilan ${p.name}`}
+          alt={ui.a11y.view(p.name)}
           widths={[480, 760, 1100]}
           sizes="(max-width: 860px) 92vw, 600px"
           format="webp"
@@ -28,7 +32,7 @@ const host = (u: string) => new URL(u).host.replace(/^www\./, '');
         />
       </figure>
       <div>
-        <p class="feature__meta">{p.year}, {p.context}. Peran: {p.role}</p>
+        <p class="feature__meta">{p.year}, {p.context}. {ui.projects.role}: {p.role}</p>
         <h3>{p.name}</h3>
         <p class="feature__tagline">{p.tagline}</p>
         <ul class="feature__points">{p.points.map((pt) => <li>{pt}</li>)}</ul>
@@ -39,18 +43,18 @@ const host = (u: string) => new URL(u).host.replace(/^www\./, '');
             ))}
           </dl>
         )}
-        <ul class="stack" aria-label="Teknologi">{p.stack.map((s) => <li>{s}</li>)}</ul>
-        {p.url && <a class="ext" href={p.url} target="_blank" rel="noopener">Kunjungi {host(p.url)}</a>}
+        <ul class="stack" aria-label={ui.a11y.tech}>{p.stack.map((s) => <li>{s}</li>)}</ul>
+        {p.url && <a class="ext" href={p.url} target="_blank" rel="noopener">{ui.projects.visit} {host(p.url)}</a>}
       </div>
     </article>
   ))}
 </div>
 
 <div class="more">
-  <h3>Proyek lain</h3>
+  <h3>{ui.projects.more}</h3>
   <table class="projtable">
-    <caption class="visually-hidden">Daftar proyek lain beserta tahun, teknologi, dan tautan</caption>
-    <thead><tr><th scope="col">Proyek</th><th scope="col">Tahun</th><th scope="col">Yang dikerjakan</th></tr></thead>
+    <caption class="visually-hidden">{ui.a11y.projectsCaption}</caption>
+    <thead><tr>{ui.projects.cols.map((c) => <th scope="col">{c}</th>)}</tr></thead>
     <tbody>
       {others.map((p) => (
         <tr id={`proyek-${p.slug}`}>
@@ -61,7 +65,7 @@ const host = (u: string) => new URL(u).host.replace(/^www\./, '');
           <td>{p.year}</td>
           <td>
             {p.tagline} {p.points[0]}
-            <ul class="stack" aria-label="Teknologi">{p.stack.map((s) => <li>{s}</li>)}</ul>
+            <ul class="stack" aria-label={ui.a11y.tech}>{p.stack.map((s) => <li>{s}</li>)}</ul>
             {p.url && <a class="ext" href={p.url} target="_blank" rel="noopener">{host(p.url)}</a>}
           </td>
         </tr>

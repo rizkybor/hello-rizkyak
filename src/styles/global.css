@@ -110,7 +110,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: 4.5rem;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
@@ -195,52 +195,223 @@ a:hover { text-decoration-thickness: 2px; }
 .btn svg { width: 1.15em; height: 1.15em; flex: none; }
 
 /* ==========================================================================
-   Header
+   Header: "pulau" mengambang bergaya margin peta.
+   Desktop: satu pil di atas berisi brand, nav control bernomor, tema, CTA.
+   Mobile : pil atas (brand + tema) dan dock nav di bawah layar.
    ========================================================================== */
 .site-header {
   position: sticky;
-  top: 0;
+  top: var(--s-3);
   z-index: 20;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: saturate(1.4) blur(8px);
-  -webkit-backdrop-filter: saturate(1.4) blur(8px);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease;
+  pointer-events: none; /* hanya pulau yang bisa diklik */
 }
-.site-header[data-scrolled] { border-bottom-color: var(--rule); }
 .site-header .wrap {
+  pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: var(--s-5);
-  min-height: 4rem;
+  gap: var(--s-4);
+  min-height: 3.75rem;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--paper) 60%, transparent) inset, var(--shadow);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+  overflow: visible;
 }
+/* latar blur dipisah ke pseudo-element: backdrop-filter di elemen induk akan
+   mengunci position:fixed anak (dock nav mobile) ke dalam pulau. */
+.site-header .wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+}
+/* progres baca: garis course ungu merayap di tepi atas pulau */
+.site-header .wrap::before {
+  content: '';
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  top: -1px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--course);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.site-header[data-scrolled] .wrap {
+  border-color: color-mix(in srgb, var(--course) 35%, var(--rule));
+  box-shadow: 0 10px 30px -12px color-mix(in srgb, var(--course) 35%, transparent), var(--shadow);
+}
+.site-header[data-scrolled] .wrap::before { opacity: 0.9; }
+
 .brand {
   display: inline-flex;
   align-items: center;
   gap: var(--s-2);
+  min-height: 32px;
   color: var(--ink);
-  font: 700 1.05rem/1 var(--font-display);
+  font: 700 1.02rem/1 var(--font-display);
   text-decoration: none;
   white-space: nowrap;
 }
 .brand svg { width: 22px; height: 22px; }
+
+/* nav: deretan control bernomor */
 .nav {
   display: flex;
-  gap: var(--s-5);
+  align-items: center;
+  gap: 2px;
   margin-left: auto;
-  font-size: var(--step--1);
-  font-weight: 600;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
 }
-.nav a { color: var(--ink-soft); text-decoration: none; padding: var(--s-2) 0; }
-.nav a:hover { color: var(--ink); }
-.header-cta { min-height: 40px; padding: 0 var(--s-4); font-size: var(--step--1); }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 6px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.nav a i {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  font: 700 0.68rem/1 var(--font-display);
+  font-style: normal;
+  color: var(--course);
+  background: var(--paper);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.nav a:hover { color: var(--ink); background: color-mix(in srgb, var(--paper) 70%, transparent); }
+.nav a:hover i { transform: scale(1.08); }
+.nav a[aria-current='true'] { color: var(--ink); background: var(--paper); box-shadow: var(--shadow); }
+.nav a[aria-current='true'] i { background: var(--course); color: var(--on-course); border-color: var(--course); }
+
+.header-cta { min-height: 40px; padding: 0 var(--s-4); font-size: var(--step--1); white-space: nowrap; flex: none; }
+.header-cta svg { display: none; }
+
+@media (max-width: 1180px) {
+  .nav a span { display: none; }
+  .nav a { padding: 5px 6px; }
+}
+
+@media (max-width: 900px) {
+  .header-cta { min-height: 36px; width: 36px; padding: 0; justify-content: center; border-radius: 50%; }
+  .header-cta svg { display: block; }
+  .header-cta span { display: none; }
+}
 
 @media (max-width: 760px) {
-  .nav { display: none; }
-  .theme { margin-left: auto; }
+  .site-header .wrap { min-height: 3.5rem; padding-left: var(--s-3); }
+  .brand__rest { display: none; }
+  .lang { margin-left: auto; }
+  .header-cta { min-height: 36px; width: 36px; padding: 0; justify-content: center; border-radius: 50%; }
+  .header-cta svg { display: block; }
+  .header-cta span { display: none; }
+
+  /* nav turun jadi dock di bawah layar */
+  .nav {
+    position: fixed;
+    left: 50%;
+    bottom: max(var(--s-3), env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 20;
+    margin: 0;
+    gap: 0;
+    padding: 4px;
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    box-shadow: var(--shadow);
+  }
+  .nav a { flex-direction: column; gap: 3px; padding: 6px 13px; font-size: 0.66rem; letter-spacing: 0.01em; }
+  .nav a span { display: inline; }
+  .nav a i { width: 24px; height: 24px; }
+  main { padding-bottom: 4.5rem; }
 }
-@media (max-width: 480px) {
-  .header-cta { display: none; }
+@media (max-width: 420px) {
+  .header-cta { display: none; } /* unduhan tetap ada di hero dan di bagian finish */
+}
+@media (max-width: 360px) {
+  .nav a { padding: 6px 9px; }
+  .site-header .wrap { gap: var(--s-2); padding-left: var(--s-2); }
+  .brand { font-size: 0.95rem; }
+  .brand svg { width: 18px; height: 18px; }
+  .theme__btn, .theme__thumb { width: 28px; height: 28px; }
+  .theme[data-mode='system'] .theme__thumb { transform: translateX(30px); }
+  .theme[data-mode='dark'] .theme__thumb { transform: translateX(60px); }
+  .lang a { height: 28px; padding: 0 3px; }
+  .lang a[aria-current='true'] { padding: 0 2px; }
+  .lang a svg { width: 18px; height: 18px; }
+  .facts div { grid-template-columns: 1fr; gap: 2px; }
+}
+
+/* ==========================================================================
+   Widget bahasa: dua bendera bulat, ID dan EN
+   ========================================================================== */
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  flex: none;
+}
+.lang a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px 0 5px;
+  border-radius: 999px;
+  color: var(--ink-faint);
+  font: 700 0.72rem/1 var(--font-body);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.lang a svg {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent);
+  filter: saturate(0.4) opacity(0.75);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.lang a:hover { color: var(--ink); }
+.lang a:hover svg { filter: none; transform: scale(1.06); }
+.lang a[aria-current='true'] {
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--rule);
+  padding: 0 9px 0 4px;
+}
+.lang a[aria-current='true'] svg { filter: none; }
+@media (max-width: 760px) {
+  .lang a { padding: 0 5px; }
+  .lang a[aria-current='true'] { padding: 0 4px; }
+  .lang a span { display: none; }
 }
 
 /* ==========================================================================
@@ -616,7 +787,7 @@ a:hover { text-decoration-thickness: 2px; }
 /* ==========================================================================
    Keahlian & sertifikat
    ========================================================================== */
-.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--s-5) var(--s-7); }
+.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); gap: var(--s-5) var(--s-7); }
 .skills dt { font: 700 var(--step-0)/1.2 var(--font-display); padding-bottom: var(--s-2); border-bottom: 2px solid var(--contour); }
 .skills dd { margin-top: var(--s-3); font-size: var(--step--1); color: var(--ink-soft); line-height: 1.75; }
 
@@ -697,7 +868,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 
 @media print {
-  .site-header, .hero__map, .hero__fade, .hero__margin, .leg__rail { display: none; }
+  .site-header, .nav, .hero__map, .hero__fade, .hero__margin, .leg__rail { display: none; }
   .leg__grid, .hero__inner { grid-template-columns: 1fr; }
 }
 
