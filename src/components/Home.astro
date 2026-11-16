@@ -1,0 +1,101 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Leg from './Leg.astro';
+import Projects from './Projects.astro';
+import Downloads from './Downloads.astro';
+import { getProfile } from '../data';
+import { getLang, t } from '../i18n/ui';
+
+const lang = getLang(Astro.currentLocale);
+const ui = t(lang);
+const { person, experience, skills, certificates, education } = getProfile(lang);
+const fill = (s: string) => s.replace('{years}', person.yearsExperience).replace('{location}', person.location);
+const legendColor = ['#b35a1f', '#f3b33d', '#16709f', '#b0168f'];
+---
+
+<Base title={ui.meta.title} description={ui.meta.description}>
+  <Header />
+  <main id="main">
+    <Hero />
+
+    <Leg id="tentang" n={1} title={ui.about.title}>
+      <div class="about">
+        <div class="about__text">
+          <p>{person.summary}</p>
+          <p>{ui.about.p2}</p>
+          <p>{ui.about.p3}</p>
+        </div>
+        <dl class="facts">
+          {ui.about.facts.map(([k, v]) => <div><dt>{k}</dt><dd>{fill(v)}</dd></div>)}
+        </dl>
+      </div>
+    </Leg>
+
+    <Leg id="proyek" n={2} title={ui.projects.title} intro={ui.projects.intro}>
+      <Projects />
+    </Leg>
+
+    <Leg id="pengalaman" n={3} title={ui.experience.title}>
+      <ol class="timeline" reversed>
+        {experience.map((e) => (
+          <li>
+            <time datetime={e.start}>{e.period}</time>
+            <div>
+              <h3>{e.role}</h3>
+              <p class="org">{e.org}, {e.place}</p>
+              <p>{e.note}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="edu">
+        {education.map((ed) => (
+          <p><strong>{ed.name}</strong>, {ed.detail} ({ed.period})</p>
+        ))}
+      </div>
+    </Leg>
+
+    <Leg id="keahlian" n={4} title={ui.skills.title}>
+      <dl class="skills">
+        {skills.map((s) => (
+          <div>
+            <dt>{s.group}</dt>
+            <dd>{s.items.join(', ')}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="certs">
+        <h3>{ui.skills.certs}</h3>
+        <ul>
+          {certificates.map((c) => (
+            <li><strong>{c.name}</strong><span>{c.issuer}, {c.date}</span></li>
+          ))}
+        </ul>
+      </div>
+    </Leg>
+
+    <Leg id="unduh" finish class="leg--finish" title={ui.downloads.title} intro={ui.downloads.intro}>
+      <Downloads />
+      <div class="contact">
+        <h3>{ui.contact.title}</h3>
+        <ul>
+          <li><span>{ui.contact.email}</span><a href={`mailto:${person.email}`}>{person.email}</a></li>
+          <li><span>{ui.contact.whatsapp}</span><a href={person.whatsapp} rel="noopener">{person.phoneDisplay}</a></li>
+          <li><span>LinkedIn</span><a href={person.linkedin} rel="noopener me">rizky-ajie-kurniawan</a></li>
+          <li><span>GitHub</span><a href={person.github} rel="noopener me">rizkybor</a></li>
+        </ul>
+      </div>
+    </Leg>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© {new Date().getFullYear()} Rizky A Kurniawan.</p>
+      <ul class="legend" aria-label={ui.a11y.legend}>
+        {ui.footer.legend.map((l, i) => <li><i style={`background:${legendColor[i]}`}></i>{l}</li>)}
+      </ul>
+    </div>
+  </footer>
+</Base>

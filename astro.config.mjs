@@ -10,7 +10,16 @@ export default defineConfig({
   trailingSlash: 'ignore',
   compressHTML: true,
   prefetch: false,
-  integrations: [sitemap()],
+  i18n: {
+    defaultLocale: 'id',
+    locales: ['id', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
+  integrations: [
+    sitemap({
+      i18n: { defaultLocale: 'id', locales: { id: 'id-ID', en: 'en-US' } },
+    }),
+  ],
   build: {
     inlineStylesheets: 'always', // satu halaman: CSS di-inline, tanpa request render-blocking
     assets: '_assets',

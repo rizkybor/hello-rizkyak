@@ -1,7 +1,11 @@
 ---
 import fs from 'node:fs';
 import path from 'node:path';
-import { documents } from '../data/profile';
+import { getProfile } from '../data';
+import { getLang, t } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const ui = t(lang);
+const { documents } = getProfile(lang);
 
 const size = (href: string) => {
   try {
@@ -22,12 +26,12 @@ const size = (href: string) => {
       </svg>
       <div>
         <h3>{d.title}</h3>
-        <p>{d.detail} PDF, {d.pages} halaman, {size(d.href)}.</p>
+        <p>{d.detail} {ui.downloads.meta(d.pages, size(d.href))}</p>
       </div>
       <a class:list={['btn', d.primary ? 'btn--primary' : 'btn--ghost']} href={d.href} download data-dl
-         aria-label={`Unduh PDF: ${d.title}, ${size(d.href)}`}>
+         aria-label={ui.a11y.downloadPdf(d.title, size(d.href))}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Unduh PDF
+        {ui.downloads.button}
       </a>
     </li>
   ))}

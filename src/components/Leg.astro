@@ -1,12 +1,14 @@
 ---
 import Control from './Control.astro';
+import { getLang, t } from '../i18n/ui';
 interface Props { id: string; n?: number; finish?: boolean; title: string; intro?: string; class?: string }
 const { id, n, finish = false, title, intro, class: cls } = Astro.props;
+const ui = t(getLang(Astro.currentLocale));
 ---
 <section id={id} class:list={['leg', cls]} aria-labelledby={`${id}-title`}>
   <div class="wrap leg__grid">
     <div class="leg__rail">
-      <Control kind={finish ? 'finish' : 'control'} n={n} label={finish ? 'Finish' : `Control ${n}`} />
+      <Control kind={finish ? 'finish' : 'control'} n={n} label={finish ? ui.a11y.finish : ui.a11y.control(n ?? 0)} />
     </div>
     <div>
       <header class="leg__head">

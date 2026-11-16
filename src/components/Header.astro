@@ -1,31 +1,56 @@
 ---
+import { getLang, t, langMeta, LANGS } from '../i18n/ui';
+const lang = getLang(Astro.currentLocale);
+const ui = t(lang);
+const navIds = ['tentang', 'proyek', 'pengalaman', 'keahlian'];
 ---
 <header class="site-header" data-header>
   <div class="wrap">
-    <a class="brand" href="#top" aria-label="Rizky Ajie Kurniawan, ke atas halaman">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21.5 19.5H2.5Z" fill="none" stroke="#b0168f" stroke-width="2.4" stroke-linejoin="round"/></svg>
-      Rizky Ajie Kurniawan
+    <a class="brand" href="#top" aria-label={ui.a11y.brand}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21.5 19.5H2.5Z" fill="none" stroke="var(--course)" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      <span>Rizky <span class="brand__rest">Ajie Kurniawan</span></span>
     </a>
-    <nav class="nav" aria-label="Navigasi utama">
-      <a href="#tentang">Tentang</a>
-      <a href="#proyek">Proyek</a>
-      <a href="#pengalaman">Pengalaman</a>
-      <a href="#keahlian">Keahlian</a>
+    <nav class="nav" aria-label={ui.a11y.nav} data-nav>
+      {navIds.map((id, i) => <a href={`#${id}`}><i aria-hidden="true">{i + 1}</i><span>{ui.header.nav[i]}</span></a>)}
     </nav>
-    <div class="theme" data-theme-switch data-mode="system" role="radiogroup" aria-label="Tema tampilan">
+    <nav class="lang" aria-label={ui.a11y.lang}>
+      {LANGS.map((l) => (
+        <a href={langMeta[l].path} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined} aria-label={langMeta[l].name} title={langMeta[l].name} data-lang={l}>
+          {l === 'id' ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#f4f4f4"/><path d="M0 12A12 12 0 0 1 24 12Z" fill="#e03a3e"/></svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <clipPath id="ukc"><circle cx="12" cy="12" r="12"/></clipPath>
+              <g clip-path="url(#ukc)">
+                <rect width="24" height="24" fill="#1d3f8f"/>
+                <path d="M-3 -2 27 26M27 -2 -3 26" stroke="#fff" stroke-width="5"/>
+                <path d="M-3 -2 27 26M27 -2 -3 26" stroke="#d02a3a" stroke-width="2"/>
+                <path d="M12 -2v28M-2 12h28" stroke="#fff" stroke-width="7"/>
+                <path d="M12 -2v28M-2 12h28" stroke="#d02a3a" stroke-width="4"/>
+              </g>
+            </svg>
+          )}
+          <span>{langMeta[l].short}</span>
+        </a>
+      ))}
+    </nav>
+    <div class="theme" data-theme-switch data-mode="system" role="radiogroup" aria-label={ui.a11y.theme}>
       <span class="theme__thumb" aria-hidden="true"></span>
-      <button class="theme__btn" type="button" role="radio" aria-checked="false" data-set="light" aria-label="Tema terang" title="Terang">
+      <button class="theme__btn" type="button" role="radio" aria-checked="false" data-set="light" data-name={ui.theme.light} aria-label={ui.a11y.themeLight} title={ui.theme.light}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <button class="theme__btn" type="button" role="radio" aria-checked="true" data-set="system" aria-label="Ikuti tema sistem" title="Sistem">
+      <button class="theme__btn" type="button" role="radio" aria-checked="true" data-set="system" data-name={ui.theme.system} aria-label={ui.a11y.themeSystem} title={ui.theme.system}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <button class="theme__btn" type="button" role="radio" aria-checked="false" data-set="dark" aria-label="Tema gelap" title="Gelap">
+      <button class="theme__btn" type="button" role="radio" aria-checked="false" data-set="dark" data-name={ui.theme.dark} aria-label={ui.a11y.themeDark} title={ui.theme.dark}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
       </button>
-      <span class="theme__label" aria-hidden="true" data-theme-label>Sistem</span>
+      <span class="theme__label" aria-hidden="true" data-theme-label>{ui.theme.system}</span>
     </div>
-    <a class="btn btn--primary header-cta" href="#unduh">Unduh dokumen</a>
+    <a class="btn btn--primary header-cta" href="#unduh" aria-label={ui.header.cta}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>{ui.header.cta}</span>
+    </a>
   </div>
 </header>
 <script>
@@ -35,7 +60,6 @@
   const sw = document.querySelector<HTMLElement>('[data-theme-switch]');
   const label = document.querySelector<HTMLElement>('[data-theme-label]');
   const mq = matchMedia('(prefers-color-scheme: dark)');
-  const names: Record<Mode, string> = { light: 'Terang', system: 'Sistem', dark: 'Gelap' };
 
   const stored = (): Mode => {
     try {
@@ -58,7 +82,7 @@
     sw?.querySelectorAll<HTMLButtonElement>('[data-set]').forEach((b) =>
       b.setAttribute('aria-checked', String(b.dataset.set === m)),
     );
-    if (label) label.textContent = names[m];
+    if (label) label.textContent = sw?.querySelector<HTMLElement>(`[data-set="${m}"]`)?.dataset.name ?? m;
     document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
       meta.content = effective(m) === 'dark' ? '#0f1a17' : '#ffffff';
       meta.removeAttribute('media');
@@ -82,11 +106,45 @@
   });
   mq.addEventListener('change', () => { if (stored() === 'system') apply('system'); });
 
-  // --- header: garis bawah saat discroll -----------------------------------
+  // --- header: status discroll + scroll-spy nav ----------------------------
   const h = document.querySelector<HTMLElement>('[data-header]');
+  const sentinel = document.getElementById('top');
+  if (h && sentinel) {
+    new IntersectionObserver(([e]) => h.toggleAttribute('data-scrolled', e.intersectionRatio < 0.9), { threshold: [0.9] })
+      .observe(sentinel);
+  }
+  // progres baca untuk garis di tepi atas pulau
   if (h) {
-    const io = new IntersectionObserver(([e]) => h.toggleAttribute('data-scrolled', !e.isIntersecting));
-    const sentinel = document.getElementById('top');
-    if (sentinel) io.observe(sentinel);
+    let ticking = false;
+    const progress = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      h.style.setProperty('--progress', String(max > 0 ? Math.min(1, scrollY / max) : 0));
+      ticking = false;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(progress); } }, { passive: true });
+    progress();
+  }
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav] a[href^="#"]')];
+  const sections = links
+    .map((a) => document.getElementById(a.hash.slice(1)))
+    .filter((el): el is HTMLElement => !!el);
+  if (sections.length) {
+    const setActive = (id: string | null) =>
+      links.forEach((a) => {
+        if (a.hash.slice(1) === id) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    const io = new IntersectionObserver(
+      (entries) => {
+        // bagian yang paling banyak terlihat jadi aktif
+        const best = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (best) setActive(best.target.id);
+        else if (window.scrollY < 200) setActive(null);
+      },
+      { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.1, 0.25, 0.5, 1] },
+    );
+    sections.forEach((s) => io.observe(s));
   }
 </script>
