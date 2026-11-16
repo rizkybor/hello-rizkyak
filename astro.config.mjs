@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // Ganti dengan domain produksi kamu (dipakai untuk canonical, Open Graph, sitemap).
-const SITE = process.env.SITE_URL ?? 'https://rizkyak.vercel.app';
+const SITE = process.env.SITE_URL ?? 'https://rizkyajiekurniawan.my.id';
 
 export default defineConfig({
   site: SITE,
