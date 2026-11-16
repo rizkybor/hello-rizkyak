@@ -26,7 +26,7 @@ export function llms(lang: Lang, site: URL | undefined): Response {
     `- ${h.other}: ${abs(langMeta[otherLang].path)}`,
     '',
     `## ${h.docs}`,
-    ...documents.map((d) => `- [${d.title}](${abs(d.href)}): ${d.detail}`),
+    ...documents.filter((d) => !d.hidden).map((d) => `- [${d.title}](${abs(d.href)}): ${d.detail}`),
     '',
     `## ${h.projects}`,
     ...projects.map((p) => `- ${p.name} (${p.year}; ${p.context}; ${h.roleWord}: ${p.role}): ${p.tagline} ${h.tech}: ${p.stack.join(', ')}.${p.url ? ` URL: ${p.url}` : ''}`),

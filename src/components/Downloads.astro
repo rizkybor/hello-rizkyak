@@ -5,7 +5,7 @@ import { getProfile } from '../data';
 import { getLang, t } from '../i18n/ui';
 const lang = getLang(Astro.currentLocale);
 const ui = t(lang);
-const { documents } = getProfile(lang);
+const documents = getProfile(lang).documents.filter((d) => !d.hidden);
 
 const size = (href: string) => {
   try {
