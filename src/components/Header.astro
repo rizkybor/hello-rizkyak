@@ -1,0 +1,92 @@
+---
+---
+<header class="site-header" data-header>
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Rizky Ajie Kurniawan, ke atas halaman">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21.5 19.5H2.5Z" fill="none" stroke="#b0168f" stroke-width="2.4" stroke-linejoin="round"/></svg>
+      Rizky Ajie Kurniawan
+    </a>
+    <nav class="nav" aria-label="Navigasi utama">
+      <a href="#tentang">Tentang</a>
+      <a href="#proyek">Proyek</a>
+      <a href="#pengalaman">Pengalaman</a>
+      <a href="#keahlian">Keahlian</a>
+    </nav>
+    <div class="theme" data-theme-switch data-mode="system" role="radiogroup" aria-label="Tema tampilan">
+      <span class="theme__thumb" aria-hidden="true"></span>
+      <button class="theme__btn" type="button" role="radio" aria-checked="false" data-set="light" aria-label="Tema terang" title="Terang">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="theme__btn" type="button" role="radio" aria-checked="true" data-set="system" aria-label="Ikuti tema sistem" title="Sistem">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="theme__btn" type="button" role="radio" aria-checked="false" data-set="dark" aria-label="Tema gelap" title="Gelap">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="theme__label" aria-hidden="true" data-theme-label>Sistem</span>
+    </div>
+    <a class="btn btn--primary header-cta" href="#unduh">Unduh dokumen</a>
+  </div>
+</header>
+<script>
+  // --- tema: terang / sistem / gelap ---------------------------------------
+  type Mode = 'light' | 'dark' | 'system';
+  const root = document.documentElement;
+  const sw = document.querySelector<HTMLElement>('[data-theme-switch]');
+  const label = document.querySelector<HTMLElement>('[data-theme-label]');
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  const names: Record<Mode, string> = { light: 'Terang', system: 'Sistem', dark: 'Gelap' };
+
+  const stored = (): Mode => {
+    try {
+      const t = localStorage.getItem('theme');
+      return t === 'light' || t === 'dark' ? t : 'system';
+    } catch {
+      return 'system';
+    }
+  };
+  const effective = (m: Mode) => (m === 'system' ? (mq.matches ? 'dark' : 'light') : m);
+
+  const apply = (m: Mode) => {
+    if (m === 'system') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', m);
+    try {
+      if (m === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', m);
+    } catch {}
+    sw?.setAttribute('data-mode', m);
+    sw?.querySelectorAll<HTMLButtonElement>('[data-set]').forEach((b) =>
+      b.setAttribute('aria-checked', String(b.dataset.set === m)),
+    );
+    if (label) label.textContent = names[m];
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+      meta.content = effective(m) === 'dark' ? '#0f1a17' : '#ffffff';
+      meta.removeAttribute('media');
+    });
+    document.dispatchEvent(new CustomEvent('themechange', { detail: { mode: m, theme: effective(m) } }));
+  };
+
+  apply(stored());
+  sw?.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-set]');
+    if (b) apply(b.dataset.set as Mode);
+  });
+  sw?.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const order: Mode[] = ['light', 'system', 'dark'];
+    const i = order.indexOf(stored());
+    const next = order[(i + (e.key === 'ArrowRight' ? 1 : -1) + order.length) % order.length];
+    apply(next);
+    sw.querySelector<HTMLButtonElement>(`[data-set="${next}"]`)?.focus();
+    e.preventDefault();
+  });
+  mq.addEventListener('change', () => { if (stored() === 'system') apply('system'); });
+
+  // --- header: garis bawah saat discroll -----------------------------------
+  const h = document.querySelector<HTMLElement>('[data-header]');
+  if (h) {
+    const io = new IntersectionObserver(([e]) => h.toggleAttribute('data-scrolled', !e.isIntersecting));
+    const sentinel = document.getElementById('top');
+    if (sentinel) io.observe(sentinel);
+  }
+</script>

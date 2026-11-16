@@ -1,0 +1,40 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import { documents } from '../data/profile';
+
+const size = (href: string) => {
+  try {
+    const b = fs.statSync(path.join(process.cwd(), 'public', href)).size;
+    return b > 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1).replace('.', ',')} MB` : `${Math.round(b / 1024)} KB`;
+  } catch {
+    return '';
+  }
+};
+---
+<ul class="downloads">
+  {documents.map((d) => (
+    <li class:list={['dl', { 'dl--primary': d.primary }]}>
+      <svg class="dl__icon" viewBox="0 0 36 44" aria-hidden="true">
+        <path d="M3 2h21l9 9v31H3Z" fill="var(--paper)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M24 2v9h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M8 22c4-5 8 5 12 0s6-3 8-1M8 30c4-4 8 4 12 0s6-2 8 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h3>{d.title}</h3>
+        <p>{d.detail} PDF, {d.pages} halaman, {size(d.href)}.</p>
+      </div>
+      <a class:list={['btn', d.primary ? 'btn--primary' : 'btn--ghost']} href={d.href} download data-dl
+         aria-label={`Unduh PDF: ${d.title}, ${size(d.href)}`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Unduh PDF
+      </a>
+    </li>
+  ))}
+</ul>
+<script>
+  // Tanda kecil setelah unduhan dimulai, tanpa tracker pihak ketiga.
+  document.querySelectorAll<HTMLAnchorElement>('[data-dl]').forEach((a) =>
+    a.addEventListener('click', () => a.closest('.dl')?.setAttribute('data-done', '')),
+  );
+</script>
