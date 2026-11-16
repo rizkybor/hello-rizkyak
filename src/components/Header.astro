@@ -8,7 +8,7 @@ const navIds = ['tentang', 'proyek', 'pengalaman', 'keahlian'];
   <div class="wrap">
     <a class="brand" href="#top" aria-label={ui.a11y.brand}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 21.5 19.5H2.5Z" fill="none" stroke="var(--course)" stroke-width="2.4" stroke-linejoin="round"/></svg>
-      <span>Rizky <span class="brand__rest">Ajie Kurniawan</span></span>
+      <span><span class="brand__rest">Rizky </span>Ajie<span class="brand__rest"> Kurniawan</span></span>
     </a>
     <nav class="nav" aria-label={ui.a11y.nav} data-nav>
       {navIds.map((id, i) => <a href={`#${id}`}><i aria-hidden="true">{i + 1}</i><span>{ui.header.nav[i]}</span></a>)}
