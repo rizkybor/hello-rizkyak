@@ -1,0 +1,46 @@
+---
+import contours from '../assets/contours.svg?raw';
+import { documents, person } from '../data/profile';
+const portfolio = documents.find((d) => d.primary)!;
+---
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="hero__map" data-terrain set:html={contours} />
+  <div class="hero__fade" aria-hidden="true"></div>
+
+  <div class="wrap hero__inner">
+    <div class="hero__start" aria-hidden="true">
+      <svg viewBox="0 0 44 40"><path d="M22 3 41 37H3Z" fill="var(--paper)" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <p class="hero__name">{person.name}, {person.role} dan {person.specialty}</p>
+      <h1 id="hero-title">Sistem web dan peta digital, dibangun dari database sampai layar.</h1>
+      <p class="hero__lede">
+        Saya bekerja di Tangerang. Empat tahun terakhir saya membangun SaaS multi-tenant, sistem billing
+        dan pembayaran, platform e-learning, dan sekarang OCCA, aplikasi untuk menggambar peta orienteering
+        di iPad dan Mac.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href={portfolio.href} download data-dl>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Unduh portofolio
+        </a>
+        <a class="btn btn--ghost" href="#proyek">Lihat proyek</a>
+      </div>
+      <ul class="hero__status" aria-label="Fokus utama">
+        <li><span><i style="background:#b35a1f"></i>Laravel, Vue dan Nuxt</span></li>
+        <li><span><i style="background:#f3b33d"></i>React, Node.js dan TypeScript</span></li>
+        <li><span><i style="background:#16709f"></i>Web GIS, Mapbox dan three.js</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="hero__margin" aria-hidden="true">
+    <div class="scalebar">
+      <svg viewBox="0 0 120 8"><rect x="0" y="0" width="30" height="8" fill="var(--ink)"/><rect x="30" y="0" width="30" height="8" fill="var(--paper)" stroke="var(--ink)"/><rect x="60" y="0" width="30" height="8" fill="var(--ink)"/><rect x="90" y="0" width="30" height="8" fill="var(--paper)" stroke="var(--ink)"/></svg>
+      <span>Skala 1:4000, kontur 2,5 m</span>
+    </div>
+  </div>
+</section>
+<script>
+  import '../scripts/terrain';
+</script>

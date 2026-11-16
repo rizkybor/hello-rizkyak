@@ -1,0 +1,19 @@
+---
+import Control from './Control.astro';
+interface Props { id: string; n?: number; finish?: boolean; title: string; intro?: string; class?: string }
+const { id, n, finish = false, title, intro, class: cls } = Astro.props;
+---
+<section id={id} class:list={['leg', cls]} aria-labelledby={`${id}-title`}>
+  <div class="wrap leg__grid">
+    <div class="leg__rail">
+      <Control kind={finish ? 'finish' : 'control'} n={n} label={finish ? 'Finish' : `Control ${n}`} />
+    </div>
+    <div>
+      <header class="leg__head">
+        <h2 id={`${id}-title`}>{title}</h2>
+        {intro && <p>{intro}</p>}
+      </header>
+      <slot />
+    </div>
+  </div>
+</section>
